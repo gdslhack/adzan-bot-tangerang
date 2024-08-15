@@ -13,7 +13,7 @@
     "express": "^4.18.2",
     "moment-timezone": "^0.5.41",
     "node-telegram-bot-api": "^0.60.0",
-    "node-cron": "^3.0.0" // Tambahkan ini
+    "node-cron": "^3.0.0"
   },
   "engines": {
     "node": "16.x"
