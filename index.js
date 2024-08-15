@@ -2,11 +2,9 @@ const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
+// Ganti dengan token bot Anda
 const token = '7523215904:AAFQ__RTZThrS42p_SxHohjqyxiEeYM-bRA';
 const bot = new TelegramBot(token, { polling: true });
-
-const timezone = 'Asia/Jakarta';
-const city = 'Tangerang';
 
 bot.onText(/\/adzan/, async (msg) => {
   const chatId = msg.chat.id;
@@ -23,30 +21,31 @@ bot.onText(/\/adzan/, async (msg) => {
       params: {
         city: city,
         country: country,
-        method: 2 // ISNA method, you can choose different methods if needed
+        method: 2 // ISNA method
       }
     });
 
     console.log('Received response:', response.data);
 
-    const times = response.data.data.timings;
-    const adzanTimes = `
-    Waktu Adzan di ${city} pada ${today}:
-    - Subuh: ${times.Fajr}
-    - Dzuhur: ${times.Dhuhr}
-    - Ashar: ${times.Asr}
-    - Maghrib: ${times.Maghrib}
-    - Isya: ${times.Isha}
-    `;
+    if (response.data && response.data.data && response.data.data.timings) {
+      const times = response.data.data.timings;
+      const adzanTimes = `
+      Waktu Adzan di ${city} pada ${today}:
+      - Subuh: ${times.Fajr}
+      - Dzuhur: ${times.Dhuhr}
+      - Ashar: ${times.Asr}
+      - Maghrib: ${times.Maghrib}
+      - Isya: ${times.Isha}
+      `;
 
-    console.log('Sending adzan times to chatId:', chatId);
-    await bot.sendMessage(chatId, adzanTimes);
+      console.log('Sending adzan times to chatId:', chatId);
+      await bot.sendMessage(chatId, adzanTimes);
+    } else {
+      console.error('Invalid response data:', response.data);
+      bot.sendMessage(chatId, 'Maaf, data waktu adzan tidak tersedia.');
+    }
   } catch (error) {
     console.error('Error fetching adzan times:', error.message);
     bot.sendMessage(chatId, 'Maaf, terjadi kesalahan dalam mengambil waktu adzan.');
   }
 });
-
-module.exports = (req, res) => {
-  res.status(200).send('Adzan Bot is running');
-};
