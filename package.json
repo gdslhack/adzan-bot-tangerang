@@ -1,13 +1,22 @@
 {
-  "name": "telegram-bot",
+  "name": "adzan-bot-tangerang",
   "version": "1.0.0",
+  "description": "A Telegram bot to remind prayer times.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "echo 'Nothing to build'"
   },
   "dependencies": {
-    "axios": "^1.3.3",
-    "moment-timezone": "^0.5.34",
-    "node-telegram-bot-api": "^0.57.0"
-  }
+    "axios": "^1.4.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "moment-timezone": "^0.5.41",
+    "node-telegram-bot-api": "^0.60.0"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "author": "Your Name",
+  "license": "MIT"
 }
