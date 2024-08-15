@@ -1,0 +1,14 @@
+{
+  "name": "adzan-bot",
+  "version": "1.0.0",
+  "description": "Bot Telegram untuk pengingat waktu adzan.",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "node-telegram-bot-api": "^0.56.0",
+    "moment-timezone": "^0.5.34"
+  }
+}
