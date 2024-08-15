@@ -46,12 +46,12 @@ app.post('/webhook', async (req, res) => {
         if (response.data && response.data.data && response.data.data.timings) {
           const times = response.data.data.timings;
           const adzanTimes = `
-          Waktu Adzan di ${city} pada ${today}:
-          - Subuh: ${times.Fajr}
-          - Dzuhur: ${times.Dhuhr}
-          - Ashar: ${times.Asr}
-          - Maghrib: ${times.Maghrib}
-          - Isya: ${times.Isha}
+🕌 **Waktu Adzan di ${city} pada ${today}:**
+- 🌅 Subuh: ${times.Fajr}
+- 🕛 Dzuhur: ${times.Dhuhr}
+- 🕒 Ashar: ${times.Asr}
+- 🌇 Maghrib: ${times.Maghrib}
+- 🌙 Isya: ${times.Isha}
           `;
 
           console.log('Sending adzan times to chatId:', chatId);
@@ -92,9 +92,19 @@ setWebhook();
 
 // Fungsi untuk mengirim notifikasi waktu sholat
 const sendPrayerNotification = async (prayerTime, prayerName) => {
+  const emojiMap = {
+    Fajr: '🌅',
+    Dhuhr: '🕛',
+    Asr: '🕒',
+    Maghrib: '🌇',
+    Isha: '🌙'
+  };
+
+  const notificationMessage = `⏰ Waktu ${prayerName} telah tiba: ${prayerTime} ${emojiMap[prayerName] || ''}`;
+
   for (const user of users) {
     try {
-      await bot.sendMessage(user, `Waktu ${prayerName} telah tiba: ${prayerTime}`);
+      await bot.sendMessage(user, notificationMessage);
     } catch (error) {
       console.error('Error sending notification:', error.message);
     }
