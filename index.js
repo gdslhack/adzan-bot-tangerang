@@ -14,19 +14,22 @@ bot.onText(/\/adzan/, async (msg) => {
 
   try {
     const city = 'Tangerang';
+    const country = 'ID';
+    const timezone = 'Asia/Jakarta';
     const today = moment().format('YYYY-MM-DD');
     console.log('Fetching adzan times for date:', today);
 
-    const response = await axios.get(`https://api.adlan.com/v1/adzan`, {
+    const response = await axios.get('https://api.aladhan.com/v1/timingsByCity', {
       params: {
         city: city,
-        date: today
+        country: country,
+        method: 2 // ISNA method, you can choose different methods if needed
       }
     });
 
     console.log('Received response:', response.data);
 
-    const times = response.data.results.times;
+    const times = response.data.data.timings;
     const adzanTimes = `
     Waktu Adzan di ${city} pada ${today}:
     - Subuh: ${times.Fajr}
