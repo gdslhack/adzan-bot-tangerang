@@ -3,6 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const moment = require('moment-timezone');
+const cron = require('node-cron');
 
 // Ganti dengan token bot Telegram Anda
 const token = '7523215904:AAFQ__RTZThrS42p_SxHohjqyxiEeYM-bRA'; // Ganti dengan token bot Telegram Anda
@@ -11,6 +12,9 @@ const bot = new TelegramBot(token, { polling: false }); // Polling harus dinonak
 // Inisialisasi server Express
 const app = express();
 app.use(bodyParser.json());
+
+// Simpan daftar pengguna yang ingin menerima notifikasi
+let users = []; // Misalkan Anda menyimpan ID pengguna dalam array ini
 
 // Endpoint untuk webhook
 app.post('/webhook', async (req, res) => {
@@ -85,3 +89,64 @@ const setWebhook = async () => {
 
 // Panggil fungsi setWebhook ketika aplikasi dimulai
 setWebhook();
+
+// Fungsi untuk mengirim notifikasi waktu sholat
+const sendPrayerNotification = async (prayerTime, prayerName) => {
+  for (const user of users) {
+    try {
+      await bot.sendMessage(user, `Waktu ${prayerName} telah tiba: ${prayerTime}`);
+    } catch (error) {
+      console.error('Error sending notification:', error.message);
+    }
+  }
+};
+
+// Fungsi untuk mendapatkan waktu adzan hari ini
+const getAdzanTimes = async () => {
+  try {
+    const city = 'Tangerang';  // Ganti sesuai kebutuhan
+    const country = 'ID';  // Ganti sesuai kebutuhan
+    const today = moment().format('YYYY-MM-DD');
+    console.log('Fetching adzan times for date:', today);
+
+    const response = await axios.get('https://api.aladhan.com/v1/timingsByCity', {
+      params: {
+        city: city,
+        country: country,
+        method: 2 // ISNA method
+      }
+    });
+
+    if (response.data && response.data.data && response.data.data.timings) {
+      return response.data.data.timings;
+    } else {
+      console.error('Invalid response data:', response.data);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching adzan times:', error.message);
+    return null;
+  }
+};
+
+// Jadwalkan notifikasi waktu sholat setiap hari
+cron.schedule('*/1 * * * *', async () => {  // Cek setiap menit
+  const timings = await getAdzanTimes();
+  if (timings) {
+    const now = moment().format('HH:mm');
+    
+    const prayerTimes = {
+      Fajr: timings.Fajr,
+      Dhuhr: timings.Dhuhr,
+      Asr: timings.Asr,
+      Maghrib: timings.Maghrib,
+      Isha: timings.Isha
+    };
+
+    for (const [prayerName, prayerTime] of Object.entries(prayerTimes)) {
+      if (now === prayerTime) {
+        await sendPrayerNotification(prayerTime, prayerName);
+      }
+    }
+  }
+});
