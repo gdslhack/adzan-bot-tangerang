@@ -2,11 +2,9 @@ const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
-// Ganti dengan token API bot Anda
 const token = '7523215904:AAFQ__RTZThrS42p_SxHohjqyxiEeYM-bRA';
 const bot = new TelegramBot(token, { polling: true });
 
-// Set timezone wilayah Tangerang
 const timezone = 'Asia/Jakarta';
 const city = 'Tangerang';
 
@@ -18,7 +16,6 @@ bot.onText(/\/adzan/, async (msg) => {
   const chatId = msg.chat.id;
 
   try {
-    // Ambil waktu sholat dari API
     const today = moment().tz(timezone).format('YYYY-MM-DD');
     const response = await axios.get(`https://api.pray.zone/v2/times/day.json?city=${city}&date=${today}`);
 
