@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const moment = require('moment-timezone');
 
-// Ganti dengan token bot Anda
-const token = '7523215904:AAFQ__RTZThrS42p_SxHohjqyxiEeYM-bRA';
-const bot = new TelegramBot(token);
+// Ganti dengan token bot Telegram Anda
+const token = '7523215904:AAFQ__RTZThrS42p_SxHohjqyxiEeYM-bRA'; // Ganti dengan token bot Telegram Anda
+const bot = new TelegramBot(token, { polling: false }); // Polling harus dinonaktifkan saat menggunakan webhook
 
 // Inisialisasi server Express
 const app = express();
