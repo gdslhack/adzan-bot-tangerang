@@ -13,15 +13,20 @@ bot.onText(/\/adzan/, async (msg) => {
   console.log('Received /adzan command from chatId:', chatId);
 
   try {
-    const timezone = 'Asia/Jakarta';
     const city = 'Tangerang';
-    const today = moment().tz(timezone).format('YYYY-MM-DD');
+    const today = moment().format('YYYY-MM-DD');
     console.log('Fetching adzan times for date:', today);
 
-    const response = await axios.get(`https://api.pray.zone/v2/times/day.json?city=${city}&date=${today}`);
+    const response = await axios.get(`https://api.adlan.com/v1/adzan`, {
+      params: {
+        city: city,
+        date: today
+      }
+    });
+
     console.log('Received response:', response.data);
 
-    const times = response.data.results.datetime[0].times;
+    const times = response.data.results.times;
     const adzanTimes = `
     Waktu Adzan di ${city} pada ${today}:
     - Subuh: ${times.Fajr}
@@ -31,9 +36,10 @@ bot.onText(/\/adzan/, async (msg) => {
     - Isya: ${times.Isha}
     `;
 
-    bot.sendMessage(chatId, adzanTimes);
+    console.log('Sending adzan times to chatId:', chatId);
+    await bot.sendMessage(chatId, adzanTimes);
   } catch (error) {
-    console.error('Error fetching adzan times:', error);
+    console.error('Error fetching adzan times:', error.message);
     bot.sendMessage(chatId, 'Maaf, terjadi kesalahan dalam mengambil waktu adzan.');
   }
 });
