@@ -8,16 +8,18 @@ const bot = new TelegramBot(token, { polling: true });
 const timezone = 'Asia/Jakarta';
 const city = 'Tangerang';
 
-bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, 'Assalamualaikum! Saya adalah bot pengingat waktu adzan. Ketik /adzan untuk mendapatkan waktu adzan hari ini.');
-});
-
 bot.onText(/\/adzan/, async (msg) => {
   const chatId = msg.chat.id;
+  console.log('Received /adzan command from chatId:', chatId);
 
   try {
+    const timezone = 'Asia/Jakarta';
+    const city = 'Tangerang';
     const today = moment().tz(timezone).format('YYYY-MM-DD');
+    console.log('Fetching adzan times for date:', today);
+
     const response = await axios.get(`https://api.pray.zone/v2/times/day.json?city=${city}&date=${today}`);
+    console.log('Received response:', response.data);
 
     const times = response.data.results.datetime[0].times;
     const adzanTimes = `
@@ -31,6 +33,7 @@ bot.onText(/\/adzan/, async (msg) => {
 
     bot.sendMessage(chatId, adzanTimes);
   } catch (error) {
+    console.error('Error fetching adzan times:', error);
     bot.sendMessage(chatId, 'Maaf, terjadi kesalahan dalam mengambil waktu adzan.');
   }
 });
