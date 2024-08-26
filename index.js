@@ -123,7 +123,7 @@ const getAdzanTimes = async () => {
       params: {
         city: city,
         country: country,
-        method: 2 // ISNA method
+        method: 1 // ISNA method
       }
     });
 
