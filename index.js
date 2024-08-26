@@ -28,7 +28,7 @@ app.post('/webhook', async (req, res) => {
       console.log('Received /adzan command from chatId:', chatId);
 
       try {
-        const city = 'Tangerang';  // Ganti sesuai kebutuhan
+        const city = 'Jakarta';  // Ganti sesuai kebutuhan
         const country = 'ID';  // Ganti sesuai kebutuhan
         const today = moment().format('YYYY-MM-DD');
         console.log('Fetching adzan times for date:', today);
